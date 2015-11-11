@@ -1,4 +1,3 @@
-import neurolab
 import numpy as np
 import neurolab as nl
 from parse import *
