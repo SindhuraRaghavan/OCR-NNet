@@ -65,4 +65,43 @@ Inference:
  * As we increase size of training data, we obtain better accuracy.
  * The maximum accuracy we obtained was of 79.5% with 48 neurons in the single hidden layer.
 ```
+##VARIATIONS
+```
+Hybrid model of OCR with HMM and Neural Networks:
+In this approach, we build a train a HMM classifier to obtain metadata about the input character (16 x 8 bitmap) as either vowel or consonant.
 
+HMM implementation used is [pyhmm](https://github.com/ananthpn/pyhmm.git)
+
+Variation 1 :
+* Build a HMM classifier trained on whether the character is a vowel or consonant
+* For test data, predict whether the character is a vowel or not
+* Give this as input to neural network along with the bitmap of the character
+* Hence, now the input layer size is 129
+
+Variation 2 :
+* Take all pairs of input data to give 2 x 128 = 256 element vector (character pairs)
+* Label (Target labels to be predicted) every character pair as
+    + vowel - vowel (v-v)
+    + vowel - consonant (v-c)
+    + consonant - vowel (c-v)
+    + consonant - consonant (c-c)
+* Divide the dataset into 4 banks of data based on the above. 
+  Split these into train and test subsets of a sample of 3:2 ratio 
+* Now, we train HMMs on each of these data banks using the Forward-Backward/Baum Welch algorithm
+* Each of these HMMs thus recognizes whether the character pair is a v-v, v-c, c-v or c-c sequence
+* Take the test data and predict the sequence for each HMM to obtain 4 probabilities. 
+  The maximum of these gives the correct sequence and hence the correct 2 bits of metadata
+* Feed the character pair bitmap along with the HMM predicted 2 bit sequence to the 
+  neural network as input with target (output layer neurons) being the character's one-hot vector
+
+
+Why these variations?
+* These variations provide more information to the Neural Network and help improve it's performance
+* Consider the example : The bitmap representation of 'a' and 'd' are similar and hence hard to differentiate for the system. 
+  With 2 bits of metadata to train the system to recognize vowel-consonant sequence pairs helps resolve this issue fairly.
+
+Performance of the hybrid OCR system:
++ output_16_best.txt	- best accuracy of 79.5% with 16 hidden units and 800 training and 200 test data
++ output_16_1.txt		- accuracy of 76.5% with 16 hidden units and 800 training and 200 test data
+Clearly, the hybrid OCR system performs better than the Neural Network based OCR
+``` 
