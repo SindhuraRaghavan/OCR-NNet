@@ -70,7 +70,7 @@ Inference:
 Hybrid model of OCR with HMM and Neural Networks:
 In this approach, we build a train a HMM classifier to obtain metadata about the input character (16 x 8 bitmap) as either vowel or consonant.
 
-HMM implementation used is [pyhmm](https://github.com/ananthpn/pyhmm.git)
+HMM implementation used is myhmm.py (https://github.com/ananthpn/pyhmm.git)
 
 Variation 1 :
 * Build a HMM classifier trained on whether the character is a vowel or consonant
